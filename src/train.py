@@ -19,6 +19,7 @@ mlflow.set_tracking_uri(TRACKING_URI)
 EXPERIMENT_NAME = "iris-classifiers"
 mlflow.set_experiment(EXPERIMENT_NAME)
 
+
 def get_param_grid():
     lr_grid = {
         "C": [0.1, 1.0, 10.0],
@@ -37,11 +38,14 @@ def get_param_grid():
         "rand_forest": (RandomForestClassifier, rf_grid),
     }
 
+
 def iter_params(grid: dict):
     keys = sorted(grid.keys())
     from itertools import product
+
     for values in product(*(grid[k] for k in keys)):
         yield dict(zip(keys, values))
+
 
 def train_and_log():
     df = load_raw()
@@ -66,7 +70,9 @@ def train_and_log():
                 mlflow.log_metric("f1_macro", f1)
 
                 dump(scaler, MODELS_DIR / "scaler.joblib")
-                mlflow.log_artifact(MODELS_DIR / "scaler.joblib", artifact_path="artifacts")
+                mlflow.log_artifact(
+                    MODELS_DIR / "scaler.joblib", artifact_path="artifacts"
+                )
 
                 mlflow.sklearn.log_model(
                     sk_model=model,
@@ -76,23 +82,36 @@ def train_and_log():
                 )
 
                 if f1 > best["f1"]:
-                    best.update({"f1": f1, "run_id": run.info.run_id, "name": model_name, "model_obj": model})
+                    best.update(
+                        {
+                            "f1": f1,
+                            "run_id": run.info.run_id,
+                            "name": model_name,
+                            "model_obj": model,
+                        }
+                    )
 
     dump(best["model_obj"], MODELS_DIR / "best_model.joblib")
-    logger.info(f"Best model: {best['name']} with F1={best['f1']:.4f} (run_id={best['run_id']})")
+    logger.info(
+        f"Best model: {best['name']} with F1={best['f1']:.4f} (run_id={best['run_id']})"
+    )
 
     try:
         model_uri = f"runs:/{best['run_id']}/model"
         result = mlflow.register_model(model_uri=model_uri, name="IrisClassifier")
-        logger.info(f"Registered model 'IrisClassifier' (version={getattr(result, 'version', 'n/a')})")
+        logger.info(
+            f"Registered model 'IrisClassifier' (version={getattr(result, 'version', 'n/a')})"
+        )
     except Exception as e:
         logger.warning(f"Model registry skipped/failed: {e}")
 
     return best
 
+
 def main():
     best = train_and_log()
     logger.info("Training finished. See ./mlruns and ./models")
+
 
 if __name__ == "__main__":
     main()
