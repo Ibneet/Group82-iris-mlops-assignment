@@ -38,7 +38,9 @@ def log_prediction(
     cur = con.cursor()
     cur.execute(
         """
-        INSERT INTO predictions (ts, sepal_length, sepal_width, petal_length, petal_width, predicted_label, probabilities)
+        INSERT INTO predictions (
+            ts, sepal_length, sepal_width, petal_length, petal_width, predicted_label, probabilities
+        )
         VALUES (?, ?, ?, ?, ?, ?, ?);
         """,
         (
