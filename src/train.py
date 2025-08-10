@@ -3,6 +3,7 @@ import mlflow
 import mlflow.sklearn
 import pandas as pd
 from joblib import dump
+
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, f1_score
