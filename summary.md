@@ -29,11 +29,3 @@ repo hygiene, experiment tracking (MLflow), containerized API, CI/CD, and monito
 
 1. **Push PR/branch** → Lint + tests.
 2. **Merge to main** → Build Docker → Push to Docker Hub (needs secrets).
-
-## 5‑min Demo Outline
-
-1. Start MLflow UI; show runs & registered model.
-2. Show trained artifacts in `models/`.
-3. `uvicorn app.main:app --reload` and post a prediction.
-4. Open `/docs` (FastAPI swagger) and `/metrics` for monitoring.
-5. Show Docker build & `docker run` + the same prediction.
